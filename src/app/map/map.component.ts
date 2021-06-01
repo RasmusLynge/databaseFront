@@ -7,6 +7,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { User } from 'src/interfaces/classes';
 
+import * as moment from 'moment';
+import { timeout } from 'rxjs/operators';
+
 export interface PeriodicElement {
   name: string;
   position: number;
@@ -64,6 +67,9 @@ export class MapComponent implements OnInit {
 
 
   topMoviesWeek: string[] = [];
+  topFollowers: string[] = [];
+  logs: string[] = [];
+
 
   displayedColumns: string[] = ['title', 'tagline', 'released', 'like'];
   movieSource = [];
@@ -78,24 +84,39 @@ export class MapComponent implements OnInit {
     this.windowWidth = window.innerWidth;
     this.windowHeight = window.innerHeight;
     let session = sessionStorage.getItem("session")
-    if(session) {
+    if (session) {
       this.loggedIn = true;
       this.getSession(session);
     }
 
     this.getMovies()
     this.getTopMovieWeek();
+
+
+    setTimeout(() => {
+      this.getTopFollowers();
+    }, 200)
+  }
+
+  getDate(unix): string {
+    return moment(unix, "x").format("DD/MM-YYYY");
   }
 
 
-  getSession(session: string){
+  getSession(session: string) {
     this.dataService.getSession(session).subscribe(userData => {
       this.user = userData;
+      if(userData.role_type === 'admin') {
+        this.dataService.getLogs().subscribe(data => {
+          this.logs = data;
+          
+        });
+      }
     })
   }
 
   logout(): void {
-    this.loggedIn = false; 
+    this.loggedIn = false;
     sessionStorage.removeItem("session");
   }
 
@@ -105,6 +126,16 @@ export class MapComponent implements OnInit {
       movies.reverse();
       movies.forEach(movie => {
         this.topMoviesWeek.push(movie.title + " - " + movie.score);
+      });
+    })
+  }
+
+  getTopFollowers() {
+
+    this.dataService.getTopFollowers().subscribe(users => {
+      users.reverse();
+      users.forEach(user => {
+        this.topFollowers.push(user.id + " - " + user.followed);
       });
     })
   }
@@ -141,8 +172,8 @@ export class MapComponent implements OnInit {
   likeMovie(title: string): void {
 
     let session = sessionStorage.getItem("session");
-    if(session) this.dataService.likeMovie(title,session).subscribe(ok => console.log(ok))
-    
+    if (session) this.dataService.likeMovie(title, session).subscribe(ok => console.log(ok))
+
 
   }
 
@@ -153,9 +184,9 @@ export class MapComponent implements OnInit {
     if (password !== "" && email !== "") {
       this.isLoading = true;
 
-      this.dataService.login(email, password).subscribe(data => { 
+      this.dataService.login(email, password).subscribe(data => {
 
-        if(data?.sessionID) {
+        if (data?.sessionID) {
           console.log(data)
           sessionStorage.setItem("session", data?.sessionID);
           this.loggedIn = true;

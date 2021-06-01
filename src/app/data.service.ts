@@ -27,7 +27,12 @@ httpOptions = {
 };
 
 
-
+getLogs():  Observable<any> {
+  return this.http.get(this.baseUrl+"getUserRoleLog", this.httpOptions).pipe(
+    tap(_ => console.log('YEEEW')),
+    catchError(this.handleError("oops! Noget gik galt ved hentning af alle film."))
+  );
+}
 
 
 getAllMovies(): Observable<any> {
@@ -36,6 +41,14 @@ getAllMovies(): Observable<any> {
     catchError(this.handleError("oops! Noget gik galt ved hentning af alle film."))
   );
 }
+
+getTopFollowers(): Observable<any> {
+  return this.http.get(this.baseUrl+"user/top/followed", this.httpOptions).pipe(
+    tap(_ => console.log('YEEEW')),
+    catchError(this.handleError("oops! Noget gik galt ved hentning af top listen af brugere."))
+  );
+}
+
 
 getTopMovieWeek(): Observable<any> {
   return this.http.get(this.baseUrl+"movie/top/week", this.httpOptions).pipe(
