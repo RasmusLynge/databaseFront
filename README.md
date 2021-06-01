@@ -1,6 +1,3 @@
-# vinter2020
+# database eksamens frontend 
 
-
-#### Deployment  
-
-ng deploy --base-href=https://bmxdanmark.dk --cname=bmxdanmark.dk --no-silent
+Skal bruges sammen med [dette projekt](https://github.com/Magmose/Database_Eksamen_Backend)
