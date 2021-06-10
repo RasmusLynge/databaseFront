@@ -65,7 +65,7 @@ export class MapComponent implements OnInit {
     Validators.required,
   ]);
 
-
+  movieRec: string[] = [];
   topMoviesWeek: string[] = [];
   topFollowers: string[] = [];
   logs: string[] = [];
@@ -95,7 +95,7 @@ export class MapComponent implements OnInit {
 
     setTimeout(() => {
       this.getTopFollowers();
-    }, 200)
+    }, 500)
   }
 
   getDate(unix): string {
@@ -112,18 +112,26 @@ export class MapComponent implements OnInit {
           
         });
       }
+
+        this.dataService.getRecMovie(session).subscribe(movies => {
+          console.log("HALLO ", movies)
+          movies.forEach(movie => {
+            this.movieRec.push(movie.title)
+          });
+          
+        })
     })
   }
 
   logout(): void {
     this.loggedIn = false;
     sessionStorage.removeItem("session");
+    this.movieRec = [];
   }
 
 
   getTopMovieWeek() {
     this.dataService.getTopMovieWeek().subscribe(movies => {
-      movies.reverse();
       movies.forEach(movie => {
         this.topMoviesWeek.push(movie.title + " - " + movie.score);
       });
@@ -135,7 +143,7 @@ export class MapComponent implements OnInit {
     this.dataService.getTopFollowers().subscribe(users => {
       users.reverse();
       users.forEach(user => {
-        this.topFollowers.push(user.id + " - " + user.followed);
+        this.topFollowers.push(user.id);
       });
     })
   }
@@ -146,6 +154,8 @@ export class MapComponent implements OnInit {
       this.movieSource = movies
     })
   }
+
+ 
 
 
 

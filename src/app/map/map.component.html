@@ -25,7 +25,7 @@
         </div>
 
         <h1>
-            ALLE FILM
+            FILM
         </h1>
 
         <table mat-table [dataSource]="movieSource" style=" width: 100%;" class="mat-elevation-z8">
@@ -134,5 +134,12 @@
 
             </div>
         </div>
+
+        <div *ngIf="movieRec" style="background-color: #343a40; color: whitesmoke; padding: 20 px;">
+            <h1>Anbefalinger:</h1>
+
+            <p *ngFor="let movie of movieRec"> {{movie}} </p>
+        </div>
     </div>
+
 </div>

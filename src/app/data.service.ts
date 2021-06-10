@@ -34,6 +34,18 @@ getLogs():  Observable<any> {
   );
 }
 
+getRecMovie(session: string): Observable<any> {
+
+  let httpOptionsWithSession = {
+    headers: new HttpHeaders({ 'sessionID': session, 'Content-Type': 'application/json' })
+  };
+
+  return this.http.get(this.baseUrl+"getMovieReccomendations", httpOptionsWithSession).pipe(
+    tap(_ => console.log('YEEEW')),
+    catchError(this.handleError("oops! Noget gik galt ved hentning af alle film."))
+  );
+}
+
 
 getAllMovies(): Observable<any> {
   return this.http.get(this.baseUrl+"getAllMovies", this.httpOptions).pipe(
@@ -51,7 +63,7 @@ getTopFollowers(): Observable<any> {
 
 
 getTopMovieWeek(): Observable<any> {
-  return this.http.get(this.baseUrl+"movie/top/week", this.httpOptions).pipe(
+  return this.http.get(this.baseUrl+"movie/top/month", this.httpOptions).pipe(
     tap(_ => console.log('YEEEW')),
     catchError(this.handleError("oops! Noget gik galt ved hentning af top listen af film."))
   );
